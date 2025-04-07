@@ -36,7 +36,7 @@ export interface Election {
 export interface Vote {
     id: number;
     voter_id: string;
-    ballot: Buffer;
+    ballot: string;
     position_id: number;
     group: string;
     created_at: string;

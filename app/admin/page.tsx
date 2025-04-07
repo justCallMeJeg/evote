@@ -30,7 +30,7 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
       <div className="bg-base-200 rounded-lg shadow-md p-4 flex flex-col space-y-2">
         <div className="flex items-center justify-between p-2">
           <h2 className="text-xl font-bold">Voter List</h2>
-          <Link href="./admin/add?type=voter" className='btn btn-secondary'>Add New Voter</Link>
+          <Link href="./admin/add?type=voter" className='btn btn-primary'>Add New Voter</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="table">
@@ -52,7 +52,7 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
                   <td>{voter.group}</td>
                   <td>{voter.verified ? 'TRUE' : 'FALSE'}</td>
                   <td className='flex space-x-2'>
-                  <Link href={"./admin/edit/?voter=" + voter.id} className='btn'>Edit</Link>
+                  <Link href={"./admin/edit/?voter=" + voter.id} className='btn bg-base-300'>Edit</Link>
                   </td>
                 </tr>
               ))}
@@ -64,7 +64,7 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
         <div className="bg-base-200 rounded-lg shadow-md p-4 flex flex-col space-y-2">
           <div className="flex items-center justify-between p-2">
             <h2 className="text-xl font-bold">Candidate List</h2>
-            <Link href="./admin/add?type=candidate" className='btn btn-secondary'>Add New Candidate</Link>
+            <Link href="./admin/add?type=candidate" className='btn btn-primary'>Add New Candidate</Link>
           </div>
         <div className="overflow-x-auto">
           <table className="table">
@@ -85,10 +85,10 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
                   <td>{candidate.id}</td>
                   <td>{candidate.name}</td>
                   <td>{positionList.find((position) => position.id === candidate.position_id)?.name}</td>
-                  <td>{candidate.group}</td>
+                  <td>{candidate.group == null ? "--" : candidate.group}</td>
                   <td>{candidate.verified ? 'TRUE' : 'FALSE'}</td>
                   <td className='flex space-x-2'>
-                    <Link href={"./admin/edit/?candidate=" + candidate.id} className='btn'>Edit</Link>
+                    <Link href={"./admin/edit/?candidate=" + candidate.id} className='btn bg-base-300'>Edit</Link>
                   </td>
                 </tr>
               ))}
