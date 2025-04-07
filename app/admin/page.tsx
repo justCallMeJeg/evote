@@ -26,7 +26,6 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
       </>
       <div className="flex items-center justify-between p-2">
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <button className='btn btn-primary'>Start Election</button>
       </div>
       <div className="bg-base-200 rounded-lg shadow-md p-4 flex flex-col space-y-2">
         <div className="flex items-center justify-between p-2">
@@ -39,6 +38,7 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
               <tr>
                 <th>Voter ID</th>
                 <th>Name</th>
+                <th>Group</th>
                 <th>Verified?</th>
                 <th>Actions</th>
               </tr>
@@ -49,6 +49,7 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
                 <tr key={voter.id}>
                   <td>{voter.id}</td>
                   <td>{voter.name}</td>
+                  <td>{voter.group}</td>
                   <td>{voter.verified ? 'TRUE' : 'FALSE'}</td>
                   <td className='flex space-x-2'>
                   <Link href={"./admin/edit/?voter=" + voter.id} className='btn'>Edit</Link>

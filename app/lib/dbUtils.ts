@@ -36,9 +36,9 @@ export interface Election {
 export interface Vote {
     id: number;
     voter_id: string;
-    candidate_id: number;
+    ballot: Buffer;
     position_id: number;
-    department: string;
+    group: string;
     created_at: string;
 }
 
@@ -264,27 +264,24 @@ export async function getElections(): Promise<Election[] | null> {
     return data ? data as Election[] : null;
 }
 
-export async function registerVote(vote: Omit<Vote, 'id' | 'created_at'>): Promise<boolean | null> {
-
-    const { data, error } = await supabase.from('votes').insert([{
-        voter_id: vote.voter_id,
-        candidate_id: vote.candidate_id,
-        position_id: vote.position_id,
-        department: vote.department,
+export async function registerVote(vote: Pick<Voter, 'id' | 'group'>, ballot: string): Promise<boolean | null> {
+    const { error } = await supabase.from('votes').insert([{
+        voter_id: vote.id,
+        ballot: ballot,
+        group: vote.group,
     }]);
 
     if (error) {
         console.error('Error registering vote:', error);
         return false;
     }
-    return data ? true : null;
+    return true;
 }
 
-export async function getVotesByElection(electionId: number): Promise<Vote[] | null> {
+export async function getVotes(): Promise<Vote[] | null> {
     const { data, error } = await supabase
         .from('votes')
         .select('*')
-        .eq('election_id', electionId);
 
     if (error) {
         console.error('Error fetching votes:', error);
@@ -293,11 +290,25 @@ export async function getVotesByElection(electionId: number): Promise<Vote[] | n
     return data ? data as Vote[] : null;
 }
 
-export async function tallyVotes(electionId: number): Promise<Record<number, Record<number, number>> | null> {
+export async function alreadyVoted(voterId: number): Promise<boolean> {
+    const { error } = await supabase
+        .from('votes')
+        .select('*')
+        .eq('voter_id', voterId)
+        .single();
+
+    if (error) {
+        console.error('Error fetching vote:', error);
+        return false;
+    }
+    return true;
+}
+
+
+export async function tallyVotes(): Promise<Record<number, Record<number, number>> | null> {
     const { data, error } = await supabase
         .from('votes')
         .select('candidate_id, position_id')
-        .eq('election_id', electionId);
 
     if (error) {
         console.error('Error fetching election results:', error);

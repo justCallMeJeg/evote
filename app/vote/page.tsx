@@ -1,5 +1,5 @@
 import React from 'react';
-import { Candidate, getCandidates, getPositions, getVoter, registerVote } from '../lib/dbUtils';
+import { alreadyVoted, Candidate, getCandidates, getPositions, getVoter, registerVote } from '../lib/dbUtils';
 import { redirect } from 'next/navigation';
 
 export default async function VotePage({searchParams}: { searchParams: Promise<{ [key: string]: string | string[] | undefined }>}) {
@@ -19,6 +19,10 @@ export default async function VotePage({searchParams}: { searchParams: Promise<{
         redirect('/login?status=error&message=Voter%20not%20verified!');
     }
 
+    if (await alreadyVoted(voterId)) {
+        redirect('/login?status=error&message=You%20have%20already%20voted!');
+    }
+    
     const candidateList = await getCandidates() || [];
     const candidatePositions = await getPositions() || [];
 
@@ -56,13 +60,11 @@ export default async function VotePage({searchParams}: { searchParams: Promise<{
                 <form
                     action={async (formData: FormData) => {
                         'use server';
-                        // Handle form submission for voting
+                        console.log('Form data:', formData);
                         const vote = await registerVote({
-                            candidate_id: parseInt(formData.get('candidate_id') as string),
-                            voter_id: voterId.toString(),
-                            department: formData.get('department') as string,
-                            position_id: parseInt(formData.get('position_id') as string),
-                        });
+                            id: voterId,
+                            group: voterData.group,
+                        }, JSON.stringify(Object.fromEntries(formData.entries())));
 
                         if (vote) {
                             redirect('/login?status=success&message=Vote%20submitted%20successfully!');
