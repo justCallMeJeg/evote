@@ -3,7 +3,7 @@ import { registerVoter } from '../lib/dbUtils'
 import { redirect } from 'next/navigation';
 import CardResponse from '../components/ui/CardResponse';
 
-export default async function  RegisterPage({searchParams}: { searchParams: Promise<{ [key: string]: string | string[] | undefined }>}) {
+export default async function RegisterPage({searchParams}: { searchParams: Promise<{ [key: string]: string | string[] | undefined }>}) {
    const { status, message } = await searchParams
 
   return (
