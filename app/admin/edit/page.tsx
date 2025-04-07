@@ -32,6 +32,15 @@ export default async function AdminEditPage ({searchParams}: { searchParams: Pro
         const dataVerified = formData.get('voterVerified')
         let res = null;
         if (!candidateId && voterId) {
+          // Cant add voter without name
+          if (!dataName) {
+            redirect('/admin/?status=error&message=Voter%20name%20is%20required!');
+          }
+          // Cant verify without group
+          if (dataVerified == 'on' && !dataGroup) {
+            redirect('/admin/?status=error&message=Voter%20group%20is%20required!');
+          }
+          
           res = await updateVoter({
             id: voterId,
             name: dataName, 
@@ -40,7 +49,14 @@ export default async function AdminEditPage ({searchParams}: { searchParams: Pro
           });
         } else if (!voterId && candidateId) {
           const positionId = formData.get('voterPosition') as string
-
+          // Cant add candidate without name
+          if (!dataName) {
+            redirect('/admin/?status=error&message=Candidate%20name%20is%20required!');
+          }
+          // cant verify without position
+          if (dataVerified == 'on' && !positionId) {
+            redirect('/admin/?status=error&message=Candidate%20position%20is%20required!');
+          }
           res = await updateCandidate({
             id: candidateId,
             name: dataName,

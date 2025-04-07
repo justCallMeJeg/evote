@@ -18,6 +18,14 @@ export default async function AdminAddPage ({searchParams}: { searchParams: Prom
         const dataVerified = formData.get('voterVerified')
         let res = null;
         if (addType == "voter") {
+          // Cant add voter without name
+          if (!dataName) {
+            redirect('/admin/?status=error&message=Voter%20name%20is%20required!');
+          }
+          // Cant verify without group
+          if (dataVerified == 'on' && !dataGroup) {
+            redirect('/admin/?status=error&message=Voter%20group%20is%20required!');
+          }
           res = await addVoter({
             name: dataName, 
             group: dataGroup,
@@ -25,7 +33,15 @@ export default async function AdminAddPage ({searchParams}: { searchParams: Prom
           });
         } else if (addType == "candidate") {
             const positionId = formData.get('voterPosition') as string
-          res = await addCandidate({
+            // Cant add candidate without name
+            if (!dataName) {
+              redirect('/admin/?status=error&message=Candidate%20name%20is%20required!');
+            }
+            // cant verify without position
+            if (dataVerified == 'on' && !positionId) {
+              redirect('/admin/?status=error&message=Candidate%20position%20is%20required!');
+            }
+            res = await addCandidate({
             name: dataName,
             position_id: parseInt(positionId),
             group: dataGroup,
