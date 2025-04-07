@@ -1,4 +1,4 @@
-import HomeCard from "./components/HomeCard";
+import HomeCard from "./components/ui/HomeCard";
 
 export default function Home() {
   return (
