@@ -1,17 +1,25 @@
 import React from 'react'
 import { Candidate, getCandidates, getPositions, getVoters, Position, Voter } from '../lib/dbUtils'
 import Link from 'next/link';
+import CardResponse from '../components/ui/CardResponse';
 
-export default async function AdminPage(){
+export default async function AdminPage({searchParams}: { searchParams: Promise<{ [key: string]: string | string[] | undefined }>}){
+  const { status, message } = await searchParams
+  const redirectStatus = status ? status : null;
+  const redirectMessage = message ? message : null;
 
   // const voterList: Voter[] = [];
   const voterList: Voter[] = (await getVoters()) || [];
   const candidateList: Candidate[] = (await getCandidates()) || [];
   const positionList: Position[] = await getPositions() || [];
 
-
   return (
     <div className="flex flex-1 py-4 h-screen sm:h-fit flex-col space-y-2 px-4">
+      <>
+      {redirectStatus === 'error' && redirectMessage 
+      ? CardResponse(redirectMessage as string, 'error')
+      : CardResponse(redirectMessage as string, 'success')}
+      </>
       <div className="flex items-center justify-between p-2">
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <button className='btn btn-primary'>Start Election</button>
@@ -19,7 +27,7 @@ export default async function AdminPage(){
       <div className="bg-base-200 rounded-lg shadow-md p-4 flex flex-col space-y-2">
         <div className="flex items-center justify-between p-2">
           <h2 className="text-xl font-bold">Voter List</h2>
-          <button className='btn btn-secondary'>Add New Voter</button>
+          <Link href="./admin/add?type=voter" className='btn btn-secondary'>Add New Voter</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="table">
@@ -39,7 +47,7 @@ export default async function AdminPage(){
                   <td>{voter.name}</td>
                   <td>{voter.verified ? 'TRUE' : 'FALSE'}</td>
                   <td className='flex space-x-2'>
-                    <button className='btn'>Edit</button>
+                  <Link href={"./admin/edit/?voter=" + voter.id} className='btn'>Edit</Link>
                   </td>
                 </tr>
               ))}
@@ -51,7 +59,7 @@ export default async function AdminPage(){
         <div className="bg-base-200 rounded-lg shadow-md p-4 flex flex-col space-y-2">
           <div className="flex items-center justify-between p-2">
             <h2 className="text-xl font-bold">Candidate List</h2>
-            <button className='btn btn-secondary'>Add New Candidate</button>
+            <Link href="./admin/add?type=candidate" className='btn btn-secondary'>Add New Candidate</Link>
           </div>
         <div className="overflow-x-auto">
           <table className="table">
