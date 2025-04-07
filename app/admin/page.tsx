@@ -16,9 +16,13 @@ export default async function AdminPage({searchParams}: { searchParams: Promise<
   return (
     <div className="flex flex-1 py-4 h-screen sm:h-fit flex-col space-y-2 px-4">
       <>
-      {redirectStatus === 'error' && redirectMessage 
-      ? CardResponse(redirectMessage as string, 'error')
-      : CardResponse(redirectMessage as string, 'success')}
+      {redirectStatus === 'success' && redirectMessage ? (
+        CardResponse(redirectMessage as string, 'success')
+      ) : redirectStatus === 'error' && redirectMessage ? (
+        CardResponse(redirectMessage as string, 'error')
+      ) : redirectStatus === 'warning' && redirectMessage ? (
+        CardResponse(redirectMessage as string, 'warning')
+      ) : null }
       </>
       <div className="flex items-center justify-between p-2">
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
